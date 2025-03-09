@@ -1,0 +1,37 @@
+{
+  "users": [
+    {
+      "id": "db5a",
+      "nome": "Joao Kevin",
+      "cpf": "111.111.111-11",
+      "email": "joaokevin100@gmail.com",
+      "senha": "joao123",
+      "telefone": "1197687321",
+      "genero": "Masculino",
+      "datanascimento": "2025-03-18",
+      "alergia": "Nao tem "
+    },
+    {
+      "id": "36ef",
+      "nome": "",
+      "cpf": "",
+      "email": "",
+      "senha": "",
+      "telefone": "",
+      "genero": "",
+      "datanascimento": "",
+      "alergia": ""
+    },
+    {
+      "id": "c52f",
+      "nome": "Roberto",
+      "cpf": "1111111111",
+      "email": "joao@gmail.com",
+      "senha": "11111",
+      "telefone": "111111",
+      "genero": "Masculino",
+      "datanascimento": "1111-11-11",
+      "alergia": "nao tem"
+    }
+  ]
+}

@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro e Login</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .form-container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            display: none;
+            flex-direction: column;
+            width: 300px;
+        }
+        input, select {
+            margin: 10px 0;
+            padding: 10px;
+            width: 100%;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            padding: 10px;
+            width: 100%;
+            background-color: #ff68e3;
+            border: none;
+            border-radius: 4px;
+            color: white;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #e055c0;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="registrationForm" class="form-container">
+        <h2>Cadastre-se</h2>
+        <input type="text" name="nome" placeholder="Nome Completo" id="input_nome" required>
+        <input type="text" name="cpf" placeholder="CPF" id="input_cpf" required>
+        <input type="email" name="email" placeholder="Email" id="input_email" required>
+        <input type="password" name="senha" placeholder="Senha" id="input_senha" required>
+        <input type="tel" name="telefone" placeholder="Telefone" id="input_telefone" required>
+        <select name="genero" id="input_genero" required>
+            <option value="">Selecione o Gênero</option>
+            <option value="Masculino">Masculino</option>
+            <option value="Feminino">Feminino</option>
+            <option value="Outro">Outro</option>
+        </select>
+        <input type="date" name="datanascimento" placeholder="Data de Nascimento" id="input_datanascimento" required>
+        <input type="text" name="alergia" placeholder="Alergia" id="input_alergia">
+        <button id="btn-register" type="submit">Cadastrar</button>
+    </div>
+
+    <div id="loginForm" class="form-container">
+        <h2>Login</h2>
+        <input type="text" name="login" placeholder="Email ou CPF" id="input_login" required>
+        <input type="password" name="senha" placeholder="Senha" id="input_login_senha" required>
+        <button id="btn-login" type="submit">Logar</button>
+    </div>
+
+
+
+    <script>
+        const registrationSection = document.querySelector('#registrationForm');
+        const loginSection = document.querySelector('#loginForm');
+        const usersList = document.querySelector('#users_list');
+
+        registrationSection.style.display = 'flex';
+
+        document.querySelector('#btn-register').addEventListener('click', (event) => {
+            event.preventDefault();
+            createUser();
+        });
+
+        document.querySelector('#btn-login').addEventListener('click', (event) => {
+            event.preventDefault();
+            loginUser();
+        });
+
+        const createUser = () => {
+            const newUser = {
+                nome: document.getElementById('input_nome').value,
+                cpf: document.getElementById('input_cpf').value,
+                email: document.getElementById('input_email').value,
+                senha: document.getElementById('input_senha').value,
+                telefone: document.getElementById('input_telefone').value,
+                genero: document.getElementById('input_genero').value,
+                datanascimento: document.getElementById('input_datanascimento').value,
+                alergia: document.getElementById('input_alergia').value
+            };
+
+            const formatedUser = JSON.stringify(newUser);
+
+            fetch("http://localhost:3000/users", {
+                body: formatedUser,
+                method: "POST",
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then((resp) => {
+                if (resp.ok) {
+                    console.log("Usuário cadastrado com sucesso!");
+                    switchToLogin();
+                } else {
+                    console.error("Erro ao cadastrar usuário.");
+                }
+            })
+            .catch((error) => {
+                console.error("Erro:", error);
+            });
+        };
+
+        const loginUser = () => {
+            const loginValue = document.getElementById('input_login').value;
+            const password = document.getElementById('input_login_senha').value;
+
+            fetch("http://localhost:3000/users")
+            .then(response => response.json())
+            .then(users => {
+                const user = users.find(user => (user.email === loginValue || user.cpf === loginValue) && user.senha === password);
+
+                if (user) {
+                    alert('Login realizado com sucesso!');
+                    // Aqui você pode redirecionar ou mudar o estado de login no frontend
+                } else {
+                    alert('Email ou senha incorretos!');
+                }
+            })
+            .catch((error) => {
+                console.error("Erro:", error);
+            });
+        };
+
+        const switchToLogin = () => {
+            registrationSection.style.display = 'none';
+            loginSection.style.display = 'flex';
+        };
+
+        const getUsers = () => {
+            fetch("http://localhost:3000/users", {
+                method: "GET",
+            })
+            .then((resp) => resp.json())
+            .then((data) => {
+                usersList.innerHTML = '';
+                data.forEach((user) => {
+                    const li = document.createElement('li');
+                    li.innerHTML = `Nome: ${user.nome} - Email: ${user.email}`;
+                    usersList.appendChild(li);
+                });
+            })
+            .catch((error) => {
+                console.error("Erro:", error);
+            });
+        };
+
+        window.addEventListener('load', () => {
+            getUsers();
+        });
+    </script>
+
+</body>
+</html>
